@@ -1,14 +1,38 @@
+import posts from "../data/posts.js";
+
 function index(req, res) {
     res.json({
-        message: "Lista dei post",
+        count: posts.length,
+        items: posts,
     });
 }
 
 function show(req, res) {
-    const id = req.params.id;
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+        res.status(400).json({
+            error: "L'id deve essere un numero",
+            item: null,
+        });
+
+        return;
+    }
+
+    const post = posts.find((post) => post.id === id);
+
+    if (!post) {
+        res.status(404).json({
+            error: `Post con id ${id} non trovato`,
+            item: null,
+        });
+
+        return;
+    }
 
     res.json({
-        message: `Dettaglio del post ${id}`,
+        error: null,
+        item: post,
     });
 }
 
